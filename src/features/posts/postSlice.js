@@ -43,13 +43,12 @@ const  initialState = {
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async() => { // this is like an action
      try{
         const response = await axios.get(POSTS_URL);
-        return response.data;
+        return [...response.data];
      } catch (error) {
-        return `Error: ${error}`
+        return `Error: ${error.message}`;
      }
 });
-console.log('posts fetched ~~~~~', fetchPosts);
-
+// console.log('posts fetched ~~~~~', fetchPosts);
 
 const postsSlice = createSlice({
     name: 'posts',
@@ -83,51 +82,51 @@ const postsSlice = createSlice({
         },
         reactionAdded: {
          reducer(state, action){
-            console.log('i am receving')
+            // console.log('i am receving')
             const { postId, reaction } = action.payload;
             // const existingPost = state.find((post) => post.id === postId);
             const existingPost = state.posts.find((post) => post.id === postId); // for dynamic initialState
             if(existingPost){
                 existingPost.reactions[reaction]++;
             }
-        }},
+        }}
+    },
 // ~~~~~~~~~~~~~~~~~~ below is the dynamic  way to handle http request ----------------------------
-        extraReducers(builder) { // this is part of dynamic fetchinh
-            builder
-            .addCase(fetchPosts.pending, (state, action) => {
-                state.status = 'loading';
-            })
-            .addCase(fetchPosts.fulfilled, (state, action) => {
-                state.status = 'succeeded';
-                //Adding date and reactions
-                let min =1;
-                const loadedPosts = action.payload.map((post) => {
-                    post.reaction = {
-                        thumbsUp: 0,
-                        wow: 0,
-                        heart: 0,
-                        rocket: 0,
-                        coffee: 0
-                    };
-                    post.date =  sub(new Date(), { minutes: min++ }).toISOString();
+    extraReducers(builder) { // this is part of dynamic fetchinh
+        builder
+        .addCase(fetchPosts.pending, (state, action) => {
+            state.status = 'loading';
+        })
+        .addCase(fetchPosts.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            //Adding date and reactions
+            let min =1;
+            const loadedPosts = action.payload.map((post) => {
+                post.reactions = {
+                    thumbsUp: 0,
+                    wow: 0,
+                    heart: 0,
+                    rocket: 0,
+                    coffee: 0
+                };
+                post.date =  sub(new Date(), { minutes: min++ }).toISOString();
 
-                    return post;
-                });
+                return post;
+            });
 
-                //Add fetched posts to the array
-                state.posts = state.posts.concat(loadedPosts);
-            })
-            .addCase(fetchPosts.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message;
-            })
-            
-        }
+            //Add fetched posts to the array
+            state.posts = state.posts.concat(loadedPosts);
+        })
+        .addCase(fetchPosts.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+        })
+        
     }
 });
-
 // export const selectedAllPosts = (state) => state.posts;
-export const selectedAllPosts = (state) => state.posts.posts; // for dynamic  initialState
+export const selectedAllPosts = (state) => state.posts.posts;
+// for dynamic  initialState
 export const getPostsStatus = (state) => state.posts.status;
 export const getPostsError = (state) => state.posts.error;
 

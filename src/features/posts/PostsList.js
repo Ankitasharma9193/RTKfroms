@@ -10,6 +10,7 @@ import PostsExcerpt from './PostsExcerpt';
 
 const PostsList = () => {
   const dispatch = useDispatch();
+  // Select data from the Redux store
   const  posts = useSelector(selectedAllPosts);
   const postsStatus = useSelector(getPostsStatus);
   const postsError = useSelector(getPostsError);
@@ -20,7 +21,7 @@ const PostsList = () => {
     }
   }, [postsStatus, dispatch])
 
-  console.log('~~~~~>>>>>>>>>>>>>>>>>',posts);
+  console.log('~~~~~>>>>>>>>>>>>>>>>>',posts, postsStatus);
 
  // const renderPosts = posts.map(post => (
     // <article key={post.id}>
@@ -39,19 +40,19 @@ const PostsList = () => {
     
   //));
   let content;
-  const contentFromPostsExcerpt = () => {
+
     if(postsStatus === "loading") {
       content = <p>loading......</p>;
     } else if (postsStatus === "failed") {
       content = <p> { postsError }</p>;
     } else if (postsStatus === 'succeeded'){
-      content = posts.map((post) => <PostsExcerpt id= {post.id} post = {post}></PostsExcerpt>)
+      content = posts.map((post) => <PostsExcerpt id= {post.id} post = {post} />)
     }
-  }
-
+  
   return (
     <section>
        <p>POSTS</p>
+       {content}
        {/* {renderPosts} */}
        
     </section>

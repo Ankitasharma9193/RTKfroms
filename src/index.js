@@ -5,7 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
- 
+
+import { fetchUsers } from './features/users/usersSlice';
+
+// This is imp and new, since we need the users to be loaded and fetched at the strating thus keeping the functionality here
+store.dispatch(fetchUsers());
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

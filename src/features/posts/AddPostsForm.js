@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectAllUsers } from '../users/usersSlice'
 import { addPost } from './postSlice';
@@ -11,7 +11,7 @@ const AddPostsForm = () => {
     const [ content, setContent ] = useState('');
 
     const  authors = useSelector(selectAllUsers);
-    // console.log(title, authorId, content);
+    console.log(authors);
     const onTitleChange = (event) => setTitleValue(event.target.value);
     const onAuthorChange = (event) => setAuthorId(event.target.value);
     const onContentChange = (event) => setContent(event.target.value);
