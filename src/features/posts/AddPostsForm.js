@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectAllUsers } from '../users/usersSlice'
 import { addPost } from './postSlice';
+import {addNewPost } from './postSlice'
 
 const AddPostsForm = () => {
     const dispatch = useDispatch();
@@ -9,26 +10,46 @@ const AddPostsForm = () => {
     const [ title, setTitleValue ] = useState('');
     const [ authorId, setAuthorId ] = useState('');
     const [ content, setContent ] = useState('');
+    const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
     const  authors = useSelector(selectAllUsers);
-    console.log(authors);
+    // console.log(authors);
     const onTitleChange = (event) => setTitleValue(event.target.value);
     const onAuthorChange = (event) => setAuthorId(event.target.value);
     const onContentChange = (event) => setContent(event.target.value);
 
+    // const onSavePostClicked = () => {
+    //     if(title && content){
+    //         console.log(title , content, authorId)
+    //         dispatch(
+    //             addPost(
+    //                 title, 
+    //                 content,
+    //                 authorId)
+    //         )
+    //         setContent('');
+    //         setTitleValue('');
+    //     }
+    // };
+
     const onSavePostClicked = () => {
-        if(title && content){
-            console.log(title , content, authorId)
-            dispatch(
-                addPost(
-                    title, 
-                    content,
-                    authorId)
-            )
-            setContent('');
-            setTitleValue('');
+        if(canSave){
+            try{
+                setAddRequestStatus( "pending");
+                dispatch(addNewPost({ title, body: content, userId: authorId }));
+
+                setContent('');
+                setTitleValue('');
+                setAuthorId('');
+                
+            } catch (error) {
+                console.log(`Error: ${error}`);
+
+            } finally {
+                setAddRequestStatus('idle')
+            }
         }
-    };
+    }
 
     const authorOptions = authors.map((user) => (
         <option key={user.id} value={user.id}>
@@ -36,7 +57,7 @@ const AddPostsForm = () => {
         </option>
     ));
     
-    const canSave = Boolean(title) && Boolean(content) && Boolean(authorId);
+    const canSave = Boolean(title) && Boolean(content) && Boolean(authorId) && addRequestStatus === 'idle';
     return (
         <section>
             <h2>Add a Post</h2>

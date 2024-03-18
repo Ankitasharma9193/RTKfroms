@@ -21,7 +21,7 @@ const PostsList = () => {
     }
   }, [postsStatus, dispatch])
 
-  console.log('~~~~~>>>>>>>>>>>>>>>>>',posts, postsStatus);
+  // console.log('~~~~~>>>>>>>>>>>>>>>>>',posts, postsStatus);
 
  // const renderPosts = posts.map(post => (
     // <article key={post.id}>

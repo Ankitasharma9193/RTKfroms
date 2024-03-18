@@ -48,6 +48,17 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async() => { // t
         return `Error: ${error.message}`;
      }
 });
+
+export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
+    try{
+        const response = await axios.post(POSTS_URL, initialPost);
+        return response.data;
+    } catch (error){
+        return `Error: ${error.message}`;
+    }
+})
+
+
 // console.log('posts fetched ~~~~~', fetchPosts);
 
 const postsSlice = createSlice({
@@ -120,6 +131,21 @@ const postsSlice = createSlice({
         .addCase(fetchPosts.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
+        })
+        .addCase(addNewPost.fulfilled, (state, action) => { 
+
+           // console.log(action.payload)// this will be just one payload which we post via form
+            action.payload.userId = Number(action.payload.userId);
+            action.payload.date = new Date().toISOString();
+            action.payload.reactions = {
+                thumbsUp: 0,
+                wow: 0,
+                heart: 0,
+                rocket: 0,
+                coffee: 0
+            };
+
+            state.posts.push(action.payload);
         })
         
     }
