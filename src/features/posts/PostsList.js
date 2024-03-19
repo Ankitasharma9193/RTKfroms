@@ -14,12 +14,12 @@ const PostsList = () => {
   const  posts = useSelector(selectedAllPosts);
   const postsStatus = useSelector(getPostsStatus);
   const postsError = useSelector(getPostsError);
-
-  useEffect(() => {
-    if(postsStatus === 'idle'){
-      dispatch(fetchPosts());
-    }
-  }, [postsStatus, dispatch])
+// we have fetched it in index.js, now even when we reload the page the post will stay there
+  // useEffect(() => {
+  //   if(postsStatus === 'idle'){
+  //     dispatch(fetchPosts());
+  //   }
+  // }, [postsStatus, dispatch])
 
   // console.log('~~~~~>>>>>>>>>>>>>>>>>',posts, postsStatus);
 
@@ -51,7 +51,6 @@ const PostsList = () => {
   
   return (
     <section>
-       <p>POSTS</p>
        {content}
        {/* {renderPosts} */}
        

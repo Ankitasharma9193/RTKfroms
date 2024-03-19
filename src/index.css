@@ -6,7 +6,7 @@
 
 html {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  background: #333;
+  background: black;
   color: whitesmoke;
 }
 
@@ -33,11 +33,44 @@ section {
   margin-top: 1em;
 }
 
+Link{
+  /* background: black; */
+  color: whitesmoke;
+}
+
 article {
   margin: 0.5em 0.5em 0.5em 0;
   border: 1px solid whitesmoke;
   border-radius: 10px;
   padding: 1em;
+}
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+nav a, nav a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+
+nav a:hover, nav a:focus {
+  text-decoration: underline;
+}
+
+main {
+  max-width: 500px;
+  margin: auto;
 }
 
 h1 {
@@ -58,6 +91,21 @@ form {
 
 .postCredit {
   font-size: 1rem;
+}
+
+.postCredit a, 
+.postCredit a:visited {
+  margin-right: 0.5rem;
+  color: black;
+}
+
+.postCredit a:hover, 
+.postCredit a:focus {
+  color: hsla(0, 0%, 0%, 0.75);
+}
+
+.excerpt {
+  font-style: italic;
 }
 
 .reactionButton {

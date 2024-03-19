@@ -3,14 +3,17 @@ import PostAuthor from './PostAuthor';
 import TimeAgo from './TimeAgo';
 import ReactionButtons from './ReactionButtons';
 
+import { Link } from 'react-router-dom';
+
 const PostsExcerpt = ({ post }) => {
     // console.log('in the excerpt',post)
   return (
     <div><article key={post.id}>
-        <h3>{ post.title }</h3>
+        <h2>{ post.title }</h2>
          {/* <p>{ post.content }</p> */}
-         <p>{post.body}</p>
+        <p className='excerpt'>{post.body.substring(0, 75)} ......</p>
         <p className='postCredit'>
+            <Link to={`post/${post.id}`} style={{color: 'whitesmoke'}}>View Full Post...</Link>
             {
                 post.userId &&
                 <PostAuthor authorId={post.userId} />

@@ -45,7 +45,7 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async() => { // t
         const response = await axios.get(POSTS_URL);
         return [...response.data];
      } catch (error) {
-        return `Error: ${error.message}`;
+        return `Error fetching posts: ${error.message}`;
      }
 });
 
@@ -54,12 +54,33 @@ export const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPos
         const response = await axios.post(POSTS_URL, initialPost);
         return response.data;
     } catch (error){
-        return `Error: ${error.message}`;
+        return ` Error adding post: ${error.message}`;
     }
 })
 
+export const updatePost = createAsyncThunk('posts/updatePost', async(initialPost) =>{
+    const { id } = initialPost;
+    console.log('In the reducer',initialPost);
 
-// console.log('posts fetched ~~~~~', fetchPosts);
+    try{
+        const response = await axios.put(`${POSTS_URL}/${id}`, initialPost);
+        return response.data;
+    } catch (error) {
+        return `Error updating post: ${error.message}`;
+    }
+});
+
+export const deletePost = createAsyncThunk('posts/deletePost', async(initialPost) => {
+    const {id} = initialPost;
+    try{
+        const response = await axios.delete(`${POSTS_URL}/${id}`, initialPost);
+        if(response?.status === 200) return initialPost;
+
+        return `${response.status} : ${response.statusText}`;
+    } catch (error) {
+        console.log(`Error deleting Post: ${error.message}`);
+    }
+});
 
 const postsSlice = createSlice({
     name: 'posts',
@@ -93,7 +114,7 @@ const postsSlice = createSlice({
         },
         reactionAdded: {
          reducer(state, action){
-            // console.log('i am receving')
+            console.log('i am receving reaction', state, action)
             const { postId, reaction } = action.payload;
             // const existingPost = state.find((post) => post.id === postId);
             const existingPost = state.posts.find((post) => post.id === postId); // for dynamic initialState
@@ -147,11 +168,35 @@ const postsSlice = createSlice({
 
             state.posts.push(action.payload);
         })
+        .addCase(updatePost.fulfilled, (state, action) => {
+            if(!action.payload?.id){
+                console.log('Update could not complete')
+                console.log(action.payload)
+                return;
+            }
+            const {id} = action.payload;
+            action.payload.date = new Date().toISOString();
+            const posts = state.posts.filter(post => post.id !== id); // the one which just updated remove that
+            state.posts = [action.payload, ...posts]; // replace the  old post with the updated one
+        })
+        .addCase(deletePost.fulfilled, (state, action)=> {
+            if(!action.payload?.id){
+                console.log('Update could not complete')
+                console.log(action.payload)
+                return;
+            }
+            const {id} = action.payload;
+            const posts = state.posts.filter(post => post.id !== id);
+            state.posts = [...posts];
+        })
         
     }
 });
 // export const selectedAllPosts = (state) => state.posts;
 export const selectedAllPosts = (state) => state.posts.posts;
+export const selectPostById = (state, postId) => {
+    return state.posts.posts.find(post => post.id === postId);
+}
 // for dynamic  initialState
 export const getPostsStatus = (state) => state.posts.status;
 export const getPostsError = (state) => state.posts.error;

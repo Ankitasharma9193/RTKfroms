@@ -3,9 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectAllUsers } from '../users/usersSlice'
 import { addPost } from './postSlice';
 import {addNewPost } from './postSlice'
+import { useNavigate } from 'react-router-dom';
 
 const AddPostsForm = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [ title, setTitleValue ] = useState('');
     const [ authorId, setAuthorId ] = useState('');
@@ -41,6 +43,7 @@ const AddPostsForm = () => {
                 setContent('');
                 setTitleValue('');
                 setAuthorId('');
+                navigate('/')
                 
             } catch (error) {
                 console.log(`Error: ${error}`);
